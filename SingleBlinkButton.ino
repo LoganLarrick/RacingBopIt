@@ -1,5 +1,10 @@
 //This is Nate Weikel's edit to the code
 //vars
+
+//sup big dog
+//this is logan larrick
+//editing the document in my branch
+//lol
 //vars\\
 
 
