@@ -1,9 +1,21 @@
+//This is Nate Weikel's edit to the code
 //vars
 
 //sup big dog
 //this is logan larrick
 //editing the document in my branch
 //lol
+//vars\\
+
+
+///////////////////////////////////////////////
+
+
+//JIMMY CATALANO WAS HERE
+
+
+///////////////////////////////////////////////
+
 
 const int buttonPin = 7;  // the number of the pushbutton pin
 const int ledPin = 8;    // the number of the LED pin
