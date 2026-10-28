@@ -1,11 +1,18 @@
-
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1305.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h>
+#include <utility/imumaths.h>
+
+Adafruit_BNO055 bno = Adafruit_BNO055(55);
+
 
 // Arduino Uno hardware SPI pins:
 // SCK  = D13
 // MOSI = D11
+
 
 //setup pedal vars
 uint8_t clutchPin = A2; // Connect button to digital pin 2
@@ -65,6 +72,16 @@ void setup() {
 
   display.display();
 
+  Serial.println("Orientation Sensor Test"); Serial.println("");
+  /* Initialise the sensor */
+  if(!bno.begin())
+  {
+    /* There was a problem detecting the BNO055 ... check your connections */
+    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+    while(1);
+  }
+
+
   //setup pedals
   pinMode(clutchPin, INPUT);
   pinMode(brakePin, INPUT);
@@ -73,7 +90,7 @@ void setup() {
   //vibrator setup
   pinMode(vibratorPin, OUTPUT);
 
-
+  bno.setExtCrystalUse(true);
 
 }
 
@@ -91,13 +108,13 @@ void loop() {
 
   //create random vibrations half of the time
   uint8_t randomVibration = random(0, 2);
-  if(randomVibration == 1){
+  /*if(randomVibration == 1){
     digitalWrite(vibratorPin, HIGH);
   }
   else{
     digitalWrite(vibratorPin, LOW);
   }
-  Serial.println(randomVibration);
+  Serial.println(randomVibration);*/
 
 
 
@@ -105,35 +122,58 @@ void loop() {
 
   // check if pedals pressed
   if (clutchState == HIGH) {
-    Serial.println("Clutch Engaged");
+    //Serial.println("Clutch Engaged");
     display.println("Clutch Engaged");
   } else {
-    Serial.println("Clutch Disengaged");
+    //Serial.println("Clutch Disengaged");
     display.println("Clutch Disengaged");
   }
 
   if (brakeState == HIGH) {
-    Serial.println("Brake Engaged");
+    //Serial.println("Brake Engaged");
     display.println("Brake Engaged");
   } else {
-    Serial.println("Brake Disengaged");
+    //Serial.println("Brake Disengaged");
     display.println("Brake Disengaged");
 
   }
 
   if (acceleratorState == HIGH) {
-    Serial.println("Accelerator Engaged");
+    //Serial.println("Accelerator Engaged");
     display.println("Accelerator Engaged");
     //make the wheel vibrate when accelerating
     digitalWrite(vibratorPin, HIGH);
   } else {
-    Serial.println("Accelerator Disengaged");
+    //Serial.println("Accelerator Disengaged");
     display.println("Accelerator Disengaged");
     
 
 
   }
 
+  /* Get a new sensor event */ 
+  sensors_event_t event; 
+  bno.getEvent(&event);
+  
+  /* Display the floating point data */
+  Serial.print("X: ");
+  Serial.print(event.orientation.x, 4);
+  Serial.print("\tY: ");
+  Serial.print(event.orientation.y, 4);
+  Serial.print("\tZ: ");
+  Serial.print(event.orientation.z, 4);
+  Serial.println("");
+
+
+
+
+
   display.display();
+
+
+
+
+
+
   delay(50); // Small delay to help debounce the switch
 }
