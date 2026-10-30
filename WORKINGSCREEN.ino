@@ -120,14 +120,14 @@ void loop() {
   acceleratorState = digitalRead(acceleratorPin);
 
   //create random vibrations half of the time
-  /*uint8_t randomVibration = random(0, 2);
+  uint8_t randomVibration = random(0, 2);
   if(randomVibration == 1){
     digitalWrite(vibratorPin, HIGH);
   }
   else{
     digitalWrite(vibratorPin, LOW);
   }
-  Serial.println(randomVibration);*/
+  Serial.println(randomVibration);
 
 
 
