@@ -5,6 +5,7 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
+#include <WTV020SD16P.h>
 
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
 
@@ -25,6 +26,12 @@ uint8_t acceleratorState = 0;     // Variable for reading the button status
 //vibration motor pin
 uint8_t vibratorPin = 8; // Connect button to digital pin 2
 
+//microsdcard module pins
+uint8_t resetPin = 4; // 
+uint8_t clockPin = 5; // 
+uint8_t dataPin = 6; //
+uint8_t busyPin = 7; // 
+
 
 #define OLED_CS     10
 #define OLED_DC     12
@@ -44,6 +51,8 @@ Adafruit_SSD1305 display(
   4000000UL
 );
 
+WTV020SD16P wtv020sd16p(resetPin,clockPin,dataPin,busyPin);
+
 void setup() {
   Serial.begin(9600);
   Serial.println("Starting OLED...");
@@ -57,7 +66,7 @@ void setup() {
 
   Serial.println("OLED initialized!");
 
-  display.clearDisplay();
+  /*display.clearDisplay();
 
   display.setTextSize(1);
   display.setTextColor(WHITE);
@@ -70,7 +79,11 @@ void setup() {
   display.println("LOGAN");
   display.println("DADDYS LIL MONSTER");
 
-  display.display();
+  display.display();*/
+
+
+  //setup speaker module
+  wtv020sd16p.reset();
 
   Serial.println("Orientation Sensor Test"); Serial.println("");
   /* Initialise the sensor */
@@ -107,8 +120,8 @@ void loop() {
   acceleratorState = digitalRead(acceleratorPin);
 
   //create random vibrations half of the time
-  uint8_t randomVibration = random(0, 2);
-  /*if(randomVibration == 1){
+  /*uint8_t randomVibration = random(0, 2);
+  if(randomVibration == 1){
     digitalWrite(vibratorPin, HIGH);
   }
   else{
@@ -132,6 +145,7 @@ void loop() {
   if (brakeState == HIGH) {
     //Serial.println("Brake Engaged");
     display.println("Brake Engaged");
+    wtv020sd16p.asyncPlayVoice(0);
   } else {
     //Serial.println("Brake Disengaged");
     display.println("Brake Disengaged");
