@@ -18,7 +18,7 @@ void loop() {
     delay(1);
   }
 
-  score = -1;
+  score = 0;
   correct = true;
   time_limit = 2500;
   timer = 0;
@@ -28,7 +28,7 @@ void loop() {
   ///////////////////////////////////////////
 
   while (correct){
-    score++;
+
     timer = 0;
     //Resetting action select vector
     for (int i = 0; i < 6; i++) {
@@ -113,7 +113,7 @@ void loop() {
       } 
       else {
         
-        //Small additional time since shifter requires 2 actions
+        //Small additional time since shifter requires additional actions
         timer -= 500;
         while (!checkShifter()){
           delay(1);
@@ -129,17 +129,34 @@ void loop() {
         } else if (digitalRead(shift_down) == HIGH && !action_select[5]){
           correct = false;
         }
+
+        //Move the shifter back to the middle
+        timer -= 500;
+        while (checkShifter()){
+          delay(1);
+          timer++;
+          if (timer >= time_limit){
+            correct = false;
+            break;
+          }
+        }
+
       }
     }
 
 
     time_limit -= 5;
 
+    if (correct) {
+      score++;
+      //OLED DISPLAY CORRECT
+      delay(350);
+    }
+
 
     //Upper limit score    
-    if (score == 99 && correct){
+    if (score == 100 && correct){
       correct = false;
-      score++;
     }
   }
 
