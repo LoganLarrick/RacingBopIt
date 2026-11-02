@@ -171,17 +171,20 @@ void loop() {
   }
 
   //FINAL SCORE DISPLAY
+  while (digitalRead(gas_pedal) == LOW){
+    delay(1);
+  }
 }
 
 bool checkInputs() {
-  if (digitalRead(gas_pedal)||digitalRead(clutch_pedal)||digitalRead(brake_pedal)||digitalRead(steer_left)||digitalRead(steer_right)||digitalRead(shift_up)||digitalRead(shift_down)){
+  if (digitalRead(gas_pedal) == HIGH||digitalRead(clutch_pedal) == HIGH||digitalRead(brake_pedal) == HIGH||digitalRead(steer_left) == HIGH||digitalRead(steer_right) == HIGH||digitalRead(shift_up) == HIGH||digitalRead(shift_down) == HIGH){
     return true;
   }
   return false;
 }
 
 bool checkShifter() {
-  if (digitalRead(shift_up) || digitalRead(shift_down)){
+  if (digitalRead(shift_up) == HIGH|| digitalRead(shift_down) == HIGH){
     return true;
   }
   return false;
