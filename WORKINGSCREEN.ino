@@ -105,6 +105,9 @@ void setup() {
 
   bno.setExtCrystalUse(true);
 
+
+   wtv020sd16p.asyncPlayVoice(0);
+
 }
 
 void loop() {
@@ -145,7 +148,6 @@ void loop() {
   if (brakeState == HIGH) {
     //Serial.println("Brake Engaged");
     display.println("Brake Engaged");
-    wtv020sd16p.asyncPlayVoice(0);
   } else {
     //Serial.println("Brake Disengaged");
     display.println("Brake Disengaged");
@@ -160,9 +162,6 @@ void loop() {
   } else {
     //Serial.println("Accelerator Disengaged");
     display.println("Accelerator Disengaged");
-    
-
-
   }
 
   /* Get a new sensor event */ 
@@ -178,6 +177,19 @@ void loop() {
   Serial.print(event.orientation.z, 4);
   Serial.println("");
 
+
+
+  if((event.orientation.y) > 45.0){
+    //wheel if turned left
+    display.println("LEFT TURN");
+  }
+  else if ((event.orientation.y) < -45.0){
+    //wheel if turned right
+    display.println("RIGHT TURN");
+  }
+  else{
+    display.println("STRAIGHT");
+  }
 
 
 
