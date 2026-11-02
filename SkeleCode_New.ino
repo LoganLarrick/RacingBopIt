@@ -82,31 +82,56 @@ void loop() {
         correct = false;
       }
     }
+
     if(digitalRead(brake_pedal)==HIGH && correct){
       if (!action_select[1]){
         correct = false;
       }
     }
+
     if(digitalRead(steer_left)==HIGH && correct){
       if (!action_select[2]){
         correct = false;
       }
     }
+
     if(digitalRead(steer_right)==HIGH && correct){
       if (!action_select[3]){
         correct = false;
       }
     }
-    if(digitalRead(shift up)==HIGH && correct){
-      if (!action_select[4]){
+
+    if((digitalRead(shift_up)==HIGH || digitalRead(shift_down)==HIGH) && correct){
+      correct = false;
+    }
+
+    if(digitalRead(clutch_pedal)==HIGH && correct){
+
+      //Incorrect input if clutch is pressed without a shift command
+      if (!action_select[4] || !action_select[5]){
         correct = false;
+      } 
+      else {
+        
+        //Small additional time since shifter requires 2 actions
+        timer -= 500;
+        while (!checkShifter()){
+          delay(1);
+          timer++;
+          if (timer >= time_limit){
+            correct = false;
+            break;
+          }
+        }
+
+        if (digitalRead(shift_up) == HIGH && !action_select[4]){
+          correct = false;
+        } else if (digitalRead(shift_down) == HIGH && !action_select[5]){
+          correct = false;
+        }
       }
     }
-    if(digitalRead(shift_down)==HIGH && correct){
-      if (!action_select[5]){
-        correct = false;
-      }
-    }
+
 
     time_limit -= 5;
 
@@ -133,6 +158,13 @@ void loop() {
 
 bool checkInputs() {
   if (digitalRead(gas_pedal)||digitalRead(clutch_pedal)||digitalRead(brake_pedal)||digitalRead(steer_left)||digitalRead(steer_right)||digitalRead(shift_up)||digitalRead(shift_down)){
+    return true;
+  }
+  return false;
+}
+
+bool checkShifter() {
+  if (digitalRead(shift_up) || digitalRead(shift_down)){
     return true;
   }
   return false;
