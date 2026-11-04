@@ -62,6 +62,7 @@ void waitForRelease(void){
 }
 
 bool checkInputs() {
+  readSteer();
   if (digitalRead(gas_pedal) == HIGH||digitalRead(clutch_pedal) == HIGH||digitalRead(brake_pedal) == HIGH||steerLeft()||steerRight()||digitalRead(shift_up) == HIGH||digitalRead(shift_down) == HIGH){
     return true;
   }
@@ -69,7 +70,7 @@ bool checkInputs() {
 }
 
 bool checkShifter() {
-  if (digitalRead(shift_up) == HIGH || digitalRead(shift_down) == HIGH){
+  if (digitalRead(shift_up) == LOW || digitalRead(shift_down) == LOW){
     return true;
   }
   return false;
@@ -316,9 +317,9 @@ void loop() {
           }
         }
 
-        if (digitalRead(shift_up) == HIGH && !action_select[4]){
+        if (digitalRead(shift_up) == LOW && !action_select[4]){
           correct = false;
-        } else if (digitalRead(shift_down) == HIGH && !action_select[5]){
+        } else if (digitalRead(shift_down) == LOW && !action_select[5]){
           correct = false;
         }
       }
