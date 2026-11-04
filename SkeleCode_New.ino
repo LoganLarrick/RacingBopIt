@@ -231,6 +231,27 @@ void loop() {
     //   myDFPlayer.play(8);
     // }
 
+  switch (rand_select) {
+        case 0:
+          showText(F("GAS!"));
+          break;
+        case 1:
+          showText(F("BRAKE!"));
+          break;
+        case 2:
+          showText(F("STEER"), F("LEFT!"));
+          break;
+        case 3:
+          showText(F("STEER"), F("RIGHT!"));
+          break;
+        case 4:
+          showText(F("SHIFT"), F("UP!"));
+          break;
+        case 5:
+          showText(F("SHIFT"), F("DOWN!"));
+          break;
+      }
+
     //Checking if an input is made; timeout otherwise
     while (!checkInputs()){
       delay(1);
@@ -241,26 +262,7 @@ void loop() {
       }
     }
 
-    switch (rand_select) {
-      case 0:
-        showText(F("GAS!"));
-        break;
-      case 1:
-        showText(F("BRAKE!"));
-        break;
-      case 2:
-        showText(F("STEER"), F("LEFT!"));
-        break;
-      case 3:
-        showText(F("STEER"), F("RIGHT!"));
-        break;
-      case 4:
-        showText(F("SHIFT"), F("UP!"));
-        break;
-      case 5:
-        showText(F("SHIFT"), F("DOWN!"));
-        break;
-    }
+    
 
     // CHECKING INPUTS TO SEE IF THEY ALIGN WITH COMMANDS
     //MAKE SURE ALL PIN NUMBERS ARE ASSIGNED IN IF STATEMENTS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
