@@ -1,0 +1,11 @@
+1: Startup screen
+2: Countdown
+3: Gas Command
+4: Brake Command
+5: Steer Left Command
+6: Steer Right Command
+7: Shift Up Command
+8: Shift Down Command
+9: Correct Audio (?)
+10: You Crashed Audio
+11: You Won Audio
