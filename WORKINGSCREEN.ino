@@ -5,10 +5,10 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
-#include <WTV020SD16P.h>
+#include <DFRobotDFPlayerMini.h>
 
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
-
+DFRobotDFPlayerMini myDFPlayer;
 
 // Arduino Uno hardware SPI pins:
 // SCK  = D13
@@ -58,10 +58,10 @@ Adafruit_SSD1305 display(
   4000000UL
 );
 
-WTV020SD16P wtv020sd16p(resetPin,clockPin,dataPin,busyPin);
 
 void setup() {
   Serial.begin(9600);
+  Serial1.begin(9600);
   Serial.println("Starting OLED...");
 
   if (!display.begin(0x3C)) {
@@ -73,24 +73,25 @@ void setup() {
 
   Serial.println("OLED initialized!");
 
-  /*display.clearDisplay();
+  //setup audio
+  Serial.println("Initializing DFPlayer...");
 
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setTextWrap(true);
-  display.setCursor(0, 0);
+  if (!myDFPlayer.begin(Serial1)) {
+    Serial.println("DFPlayer init failed:");
+    Serial.println("1. Check wiring and 1k resistor");
+    Serial.println("2. Check SD card is inserted and FAT32");
+    while (true);
+  }
 
-  display.println("OLED WORKING!");
-  display.println();
-  display.println("JIMMY");
-  display.println("LOGAN");
-  display.println("DADDYS LIL MONSTER");
+  Serial.println("DFPlayer ready.");
 
-  display.display();*/
+  myDFPlayer.setTimeOut(500);
+  myDFPlayer.volume(30);        // 0 to 30
+  myDFPlayer.EQ(DFPLAYER_EQ_NORMAL);
+  myDFPlayer.outputDevice(DFPLAYER_DEVICE_SD);
 
 
-  //setup speaker module
-  wtv020sd16p.reset();
+  myDFPlayer.play(1);  
 
   Serial.println("Orientation Sensor Test"); Serial.println("");
   /* Initialise the sensor */
@@ -118,8 +119,6 @@ void setup() {
   bno.setExtCrystalUse(true);
 
 
-   wtv020sd16p.asyncPlayVoice(0);
-
 }
 
 void loop() {
@@ -138,7 +137,6 @@ void loop() {
   shiftUpState = digitalRead(shiftUpPin);
   shiftDownState = digitalRead(shiftDownPin);
 
-
   //create random vibrations half of the time
   uint8_t randomVibration = random(0, 2);
   if(randomVibration == 1){
@@ -147,11 +145,6 @@ void loop() {
   else{
     digitalWrite(vibratorPin, LOW);
   }
-  Serial.println(randomVibration);
-
-
-
-
 
   // check if pedals pressed
   if (clutchState == HIGH) {
@@ -192,23 +185,10 @@ void loop() {
     display.println("Shifting Neutral");
   }
 
-
-
   /* Get a new sensor event */ 
   sensors_event_t event; 
   bno.getEvent(&event);
   
-  /* Display the floating point data */
-  Serial.print("X: ");
-  Serial.print(event.orientation.x, 4);
-  Serial.print("\tY: ");
-  Serial.print(event.orientation.y, 4);
-  Serial.print("\tZ: ");
-  Serial.print(event.orientation.z, 4);
-  Serial.println("");
-
-
-
   if((event.orientation.y) > 45.0){
     //wheel if turned left
     display.println("LEFT TURN");
@@ -221,17 +201,7 @@ void loop() {
     display.println("STRAIGHT");
   }
 
-
-
-
-
-
   display.display();
-
-
-
-
-
 
   delay(50); // Small delay to help debounce the switch
 }
