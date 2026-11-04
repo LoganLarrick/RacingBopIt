@@ -32,6 +32,13 @@ uint8_t clockPin = 5; //
 uint8_t dataPin = 6; //
 uint8_t busyPin = 7; // 
 
+//shifter
+uint8_t shiftUpPin = 6; 
+uint8_t shiftUpState = 0;    
+uint8_t shiftDownPin = 7; 
+uint8_t shiftDownState = 0;  
+
+
 
 #define OLED_CS     10
 #define OLED_DC     12
@@ -103,6 +110,11 @@ void setup() {
   //vibrator setup
   pinMode(vibratorPin, OUTPUT);
 
+  //shifter pin setup
+  pinMode(shiftUpPin, INPUT);
+  pinMode(shiftDownPin, INPUT);
+
+
   bno.setExtCrystalUse(true);
 
 
@@ -121,6 +133,11 @@ void loop() {
   clutchState = digitalRead(clutchPin);
   brakeState = digitalRead(brakePin);
   acceleratorState = digitalRead(acceleratorPin);
+
+  //read vals of the shifter
+  shiftUpState = digitalRead(shiftUpPin);
+  shiftDownState = digitalRead(shiftDownPin);
+
 
   //create random vibrations half of the time
   uint8_t randomVibration = random(0, 2);
@@ -164,6 +181,19 @@ void loop() {
     display.println("Accelerator Disengaged");
   }
 
+  //shifter logic
+  if (shiftUpState == HIGH) {
+    display.println("Shifting Up");
+  } 
+  else if (shiftDownState == HIGH){
+    display.println("Shifting Down");
+  }
+  else {
+    display.println("Shifting Neutral");
+  }
+
+
+
   /* Get a new sensor event */ 
   sensors_event_t event; 
   bno.getEvent(&event);
@@ -190,6 +220,8 @@ void loop() {
   else{
     display.println("STRAIGHT");
   }
+
+
 
 
 
